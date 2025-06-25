@@ -12,6 +12,7 @@ import org.jreleaser.model.Active
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.plugin.serialization)
     alias(libs.plugins.kotlin.plugin.power.assert)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
     alias(libs.plugins.dokka)
@@ -22,12 +23,10 @@ plugins {
     alias(libs.plugins.xemantic.conventions)
 }
 
-// TODO change the group
-group = "com.xemantic.template"
+group = "com.xemantic.kotlin"
 
-// TODO fill up the details
 xemantic {
-    description = "A template repository for Xemantic's Kotlin multiplatform projects"
+    description = "Kotlin extensions which should have been added to the stdlib"
     inceptionYear = 2025
     license = License.APACHE
     developer(
@@ -56,7 +55,6 @@ repositories {
 
 kotlin {
 
-    // TODO remove for a non-library project
     explicitApi()
 
     compilerOptions {
@@ -68,6 +66,7 @@ kotlin {
         )
         extraWarnings = true
         progressiveMode = true
+        optIn.addAll("kotlin.time.ExperimentalTime")
     }
 
     jvm {
@@ -84,7 +83,6 @@ kotlin {
     js {
         browser()
         nodejs()
-        // TODO remove for a non-library project
         binaries.library()
     }
 
@@ -92,13 +90,11 @@ kotlin {
         browser()
         nodejs()
         d8()
-        // TODO remove for a non-library project
         binaries.library()
     }
 
     wasmWasi {
         nodejs()
-        // TODO remove for a non-library project
         binaries.library()
     }
 
@@ -134,10 +130,17 @@ kotlin {
 
     sourceSets {
 
+        commonMain {
+            dependencies {
+                implementation(libs.kotlinx.serialization.core)
+            }
+        }
+
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.xemantic.kotlin.test)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 
