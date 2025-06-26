@@ -1,3 +1,7 @@
+public final class com/xemantic/kotlin/core/collections/XemanticCollectionsKt {
+	public static final fun mapLast (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+}
+
 public final class com/xemantic/kotlin/core/time/InstantSerializer : kotlinx/serialization/KSerializer {
 	public static final field INSTANCE Lcom/xemantic/kotlin/core/time/InstantSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
