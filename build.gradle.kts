@@ -130,16 +130,11 @@ kotlin {
 
     sourceSets {
 
-        commonMain {
-            dependencies {
-                implementation(libs.kotlinx.serialization.core)
-            }
-        }
-
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.xemantic.kotlin.test)
+                implementation(libs.kotlinx.serialization.core)
                 implementation(libs.kotlinx.serialization.json)
             }
         }

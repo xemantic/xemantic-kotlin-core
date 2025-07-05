@@ -4,7 +4,7 @@ javaTarget = "17"
 
 kotlin = "2.2.0"
 
-kotlinxSerialization = "1.8.1"
+kotlinxSerialization = "1.9.0"
 
 xemanticKotlinTest = "1.9.0"
 
@@ -12,7 +12,7 @@ xemanticKotlinTest = "1.9.0"
 
 versionsPlugin = "0.52.0"
 dokkaPlugin = "2.0.0"
-jreleaserPlugin = "1.18.0"
+jreleaserPlugin = "1.19.0"
 binaryCompatibilityValidatorPlugin = "0.18.0"
 xemanticConventionsPlugin = "0.3.3"
 
