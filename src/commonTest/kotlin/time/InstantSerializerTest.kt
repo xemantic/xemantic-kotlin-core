@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-@file:UseSerializers(InstantSerializer::class)
-
 package com.xemantic.kotlin.core.time
 
 import com.xemantic.kotlin.test.assert
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.time.Instant
