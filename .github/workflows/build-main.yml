@@ -25,7 +25,9 @@ jobs:
       - name: Build
         run: ./gradlew build publishToMavenCentral
         env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ secrets.GITHUBACTOR }}
-          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.GITHUBTOKEN }}
+#          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ secrets.GITHUBACTOR }}
+#          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.GITHUBTOKEN }}
