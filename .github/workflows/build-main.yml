@@ -27,5 +27,5 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-          ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ secrets.GITHUBACTOR }}
-          ORG_GRADLE_PROJECT_githubPackagesPassword: ${{ secrets.GITHUBTOKEN }}
+          ORG_GRADLE_PROJECT_GithubPackagesUsername: ${{ secrets.GITHUBACTOR }}
+          ORG_GRADLE_PROJECT_GithubPackagesPassword: ${{ secrets.GITHUBTOKEN }}
