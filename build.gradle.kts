@@ -148,10 +148,14 @@ powerAssert {
     )
 }
 
-// https://kotlinlang.org/docs/dokka-migration.html#adjust-configuration-options
 dokka {
     pluginsConfiguration.html {
-        footerMessage = """© ${if (metaInceptionYear != now.year.toString()) "$metaInceptionYear-" else ""}${now.year} $metaOrganization"""
+        val years = if (metaInceptionYear != now.year.toString()) {
+            "$metaInceptionYear-${now.year}"
+        } else {
+            "${now.year}"
+        }
+        footerMessage = """© $years $metaOrganization"""
     }
 }
 
