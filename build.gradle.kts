@@ -22,35 +22,13 @@ plugins {
 
 group = "com.xemantic.kotlin"
 
+val metaInceptionYear: String = "2025"
+val metaDescription: String = "Kotlin stdlib extensions"
+
 val isReleaseBuild: Boolean = !(project.version as String).endsWith("-SNAPSHOT")
-
-//xemantic {
-//    description = "Kotlin extensions which should have been added to the stdlib"
-//    inceptionYear = 2025
-//    license = License.APACHE
-//    developer(
-//        id = "morisil",
-//        name = "Kazik Pogoda",
-//        email = "morisil@xemantic.com"
-//    )
-//}
-
-//val releaseAnnouncementSubject = """🚀 ${rootProject.name} $version has been released!"""
-//
-//val releaseAnnouncement = """
-//$releaseAnnouncementSubject
-//
-//${xemantic.description}
-//
-//${xemantic.releasePageUrl}
-//"""
 
 val javaTarget = libs.versions.javaTarget.get()
 val kotlinTarget = KotlinVersion.fromVersion(libs.versions.kotlinTarget.get())
-
-repositories {
-    mavenCentral()
-}
 
 kotlin {
 
@@ -142,6 +120,10 @@ kotlin {
 
 }
 
+repositories {
+    mavenCentral()
+}
+
 tasks {
 
     // skip tests which require XCode components to be installed
@@ -165,7 +147,7 @@ dokka {
 }
 
 val isPublishingToGitHub = gradle.startParameter.taskNames.any {
-    it.contains("publishAllPublicationsToGithubPackagesRepository")
+    it.contains("publishAllPublicationsToGitHubPackagesRepository")
 }
 
 publishing {
@@ -173,27 +155,12 @@ publishing {
         repositories {
             maven {
                 name = "GitHubPackages"
-                setUrl("https://maven.pkg.github.com/xemantic/xemantic-kotlin-core")
-                credentials {
-                    username = project.properties["githubActor"]!!.toString()
-                    password = project.properties["githubToken"]!!.toString()
-                }
+                url = uri("https://maven.pkg.github.com/xemantic/xemantic-kotlin-core")
+                credentials(PasswordCredentials::class)
             }
         }
     }
 }
-
-//tasks.register<Jar>("dokkaHtmlJar") {
-//    dependsOn(tasks.dokkaGenerate)
-//    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-//    archiveClassifier.set("html-docs")
-//}
-//
-//tasks.register<Jar>("dokkaJavadocJar") {
-//    dependsOn(tasks.dokkaJavadoc)
-//    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
-//    archiveClassifier.set("javadoc")
-//}
 
 mavenPublishing {
 
@@ -202,8 +169,11 @@ mavenPublishing {
         sourcesJar = true
     ))
 
-    publishToMavenCentral()
     signAllPublications()
+
+    publishToMavenCentral(
+        automaticRelease = true
+    )
 
     coordinates(
         groupId = group.toString(),
@@ -213,9 +183,9 @@ mavenPublishing {
 
     pom {
         name = rootProject.name
-        description = "Kotlin extensions which should have been added to the stdlib"
-        inceptionYear = "2025" //xemantic.inceptionYear.toString()
-        url = "https://github.com/xemantic/xemantic-kotlin-core"
+        description = metaDescription
+        inceptionYear = metaInceptionYear
+        url = "https://github.com/xemantic/${rootProject.name}"
 
         licenses {
             license {
@@ -234,7 +204,7 @@ mavenPublishing {
         }
 
         scm {
-            url = "https://github.com/xemantic/xemantic-kotlin-core"
+            url = "https://github.com/xemantic/${rootProject.name}"
             connection = "scm:git:git://github.com/xemantic/${rootProject.name}.git"
             developerConnection = "scm:git:ssh://git@github.com/xemantic/${rootProject.name}.git"
         }
