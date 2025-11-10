@@ -5,21 +5,15 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.swiftexport.ExperimentalSwiftExportDsl
-import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
-import org.jreleaser.model.Active
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.plugin.serialization)
     alias(libs.plugins.kotlin.plugin.power.assert)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
     alias(libs.plugins.dokka)
     alias(libs.plugins.versions)
-    `maven-publish`
-    signing
-    alias(libs.plugins.jreleaser)
+    alias(libs.plugins.maven.publish)
     alias(libs.plugins.xemantic.conventions)
 }
 
@@ -165,93 +159,38 @@ dokka {
     }
 }
 
-val javadocJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-    from(tasks.dokkaGeneratePublicationHtml)
-}
+mavenPublishing {
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 
-publishing {
-    publications {
-        withType<MavenPublication> {
-            artifact(javadocJar)
-            xemantic.configurePom(this)
-        }
-    }
-}
+    coordinates(group.toString(), rootProject.name, version.toString())
 
-jreleaser {
-    project {
+    pom {
+        name = rootProject.name
         description = xemantic.description
-        copyright = xemantic.copyright
-        license = xemantic.license!!.spxdx
-        links {
-            homepage = xemantic.homepageUrl
-            documentation = xemantic.documentationUrl
-        }
-        authors = xemantic.authorIds
-    }
-    deploy {
-        maven {
-            mavenCentral {
-                create("maven-central") {
-                    active = Active.ALWAYS
-                    url = "https://central.sonatype.com/api/v1/publisher"
-                    applyMavenCentralRules = false
-                    maxRetries = 240
-                    stagingRepository(xemantic.stagingDeployDir.path)
-                    // workaround: https://github.com/jreleaser/jreleaser/issues/1784
-                    kotlin.targets.forEach { target ->
-                        if (target !is KotlinJvmTarget) {
-                            val nonJarArtifactId = if (target.platformType == KotlinPlatformType.wasm) {
-                                "${name}-wasm-${target.name.lowercase().substringAfter("wasm")}"
-                            } else {
-                                "${name}-${target.name.lowercase()}"
-                            }
-                            artifactOverride {
-                                artifactId = nonJarArtifactId
-                                jar = false
-                                verifyPom = false
-                                sourceJar = false
-                                javadocJar = false
-                            }
-                        }
-                    }
-                }
+        inceptionYear = xemantic.inceptionYear.toString()
+        url = xemantic.homepageUrl
+
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         }
-    }
-    release {
-        github {
-            skipRelease = true // we are releasing through GitHub UI
-            skipTag = true
-            token = "empty"
-            changelog {
-                enabled = false
+
+        developers {
+            developer {
+                id = "morisil"
+                name = "Kazik Pogoda"
+                url = "https://github.com/morisil/"
             }
         }
-    }
-    checksum {
-        individual = false
-        artifacts = false
-        files = false
-    }
-    announce {
-        webhooks {
-            create("discord") {
-                active = Active.ALWAYS
-                message = releaseAnnouncement
-                messageProperty = "content"
-                structuredMessage = true
-            }
-        }
-        linkedin {
-            active = Active.ALWAYS
-            subject = releaseAnnouncementSubject
-            message = releaseAnnouncement
-        }
-        bluesky {
-            active = Active.ALWAYS
-            status = releaseAnnouncement
+
+        scm {
+            url = xemantic.homepageUrl
+            connection = "scm:git:git://github.com/xemantic/${rootProject.name}.git"
+            developerConnection = "scm:git:ssh://git@github.com/xemantic/${rootProject.name}.git"
         }
     }
 }

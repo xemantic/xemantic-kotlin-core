@@ -12,7 +12,7 @@ xemanticKotlinTest = "1.9.0"
 
 versionsPlugin = "0.52.0"
 dokkaPlugin = "2.0.0"
-jreleaserPlugin = "1.19.0"
+mavenPublishPlugin = "0.34.0"
 binaryCompatibilityValidatorPlugin = "0.18.0"
 xemanticConventionsPlugin = "0.3.3"
 
@@ -29,5 +29,5 @@ kotlin-plugin-power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", 
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidatorPlugin" }
-jreleaser = { id = "org.jreleaser", version.ref = "jreleaserPlugin" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublishPlugin" }
 xemantic-conventions = { id = "com.xemantic.gradle.xemantic-conventions", version.ref = "xemanticConventionsPlugin" }
