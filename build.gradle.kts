@@ -1,7 +1,8 @@
 @file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import com.xemantic.gradle.conventions.License
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -17,31 +18,32 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.versions)
     alias(libs.plugins.maven.publish)
-    alias(libs.plugins.xemantic.conventions)
 }
 
 group = "com.xemantic.kotlin"
 
-xemantic {
-    description = "Kotlin extensions which should have been added to the stdlib"
-    inceptionYear = 2025
-    license = License.APACHE
-    developer(
-        id = "morisil",
-        name = "Kazik Pogoda",
-        email = "morisil@xemantic.com"
-    )
-}
+val isReleaseBuild: Boolean = !(project.version as String).endsWith("-SNAPSHOT")
 
-val releaseAnnouncementSubject = """🚀 ${rootProject.name} $version has been released!"""
+//xemantic {
+//    description = "Kotlin extensions which should have been added to the stdlib"
+//    inceptionYear = 2025
+//    license = License.APACHE
+//    developer(
+//        id = "morisil",
+//        name = "Kazik Pogoda",
+//        email = "morisil@xemantic.com"
+//    )
+//}
 
-val releaseAnnouncement = """
-$releaseAnnouncementSubject
-
-${xemantic.description}
-
-${xemantic.releasePageUrl}
-"""
+//val releaseAnnouncementSubject = """🚀 ${rootProject.name} $version has been released!"""
+//
+//val releaseAnnouncement = """
+//$releaseAnnouncementSubject
+//
+//${xemantic.description}
+//
+//${xemantic.releasePageUrl}
+//"""
 
 val javaTarget = libs.versions.javaTarget.get()
 val kotlinTarget = KotlinVersion.fromVersion(libs.versions.kotlinTarget.get())
@@ -158,21 +160,62 @@ powerAssert {
 // https://kotlinlang.org/docs/dokka-migration.html#adjust-configuration-options
 dokka {
     pluginsConfiguration.html {
-        footerMessage.set(xemantic.copyright)
+//        footerMessage.set(xemantic.copyright)
     }
 }
 
+val isPublishingToGitHub = gradle.startParameter.taskNames.any {
+    it.contains("publishAllPublicationsToGithubPackagesRepository")
+}
+
+publishing {
+    if (isPublishingToGitHub) {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                setUrl("https://maven.pkg.github.com/xemantic/xemantic-kotlin-core")
+                credentials {
+                    username = project.properties["githubActor"]!!.toString()
+                    password = project.properties["githubToken"]!!.toString()
+                }
+            }
+        }
+    }
+}
+
+//tasks.register<Jar>("dokkaHtmlJar") {
+//    dependsOn(tasks.dokkaGenerate)
+//    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+//    archiveClassifier.set("html-docs")
+//}
+//
+//tasks.register<Jar>("dokkaJavadocJar") {
+//    dependsOn(tasks.dokkaJavadoc)
+//    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+//    archiveClassifier.set("javadoc")
+//}
+
 mavenPublishing {
+
+    configure(KotlinMultiplatform(
+        javadocJar = JavadocJar.Dokka("dokkaGenerateHtml"),
+        sourcesJar = true
+    ))
+
     publishToMavenCentral()
     signAllPublications()
 
-    coordinates(group.toString(), rootProject.name, version.toString())
+    coordinates(
+        groupId = group.toString(),
+        artifactId = rootProject.name,
+        version = version.toString()
+    )
 
     pom {
         name = rootProject.name
-        description = xemantic.description
-        inceptionYear = xemantic.inceptionYear.toString()
-        url = xemantic.homepageUrl
+        description = "Kotlin extensions which should have been added to the stdlib"
+        inceptionYear = "2025" //xemantic.inceptionYear.toString()
+        url = "https://github.com/xemantic/xemantic-kotlin-core"
 
         licenses {
             license {
@@ -186,12 +229,12 @@ mavenPublishing {
             developer {
                 id = "morisil"
                 name = "Kazik Pogoda"
-                url = "https://github.com/morisil/"
+                url = "https://github.com/morisil"
             }
         }
 
         scm {
-            url = xemantic.homepageUrl
+            url = "https://github.com/xemantic/xemantic-kotlin-core"
             connection = "scm:git:git://github.com/xemantic/${rootProject.name}.git"
             developerConnection = "scm:git:ssh://git@github.com/xemantic/${rootProject.name}.git"
         }
