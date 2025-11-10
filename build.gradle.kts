@@ -8,12 +8,12 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.swiftexport.ExperimentalSwiftExportDsl
+import java.time.LocalDateTime
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.plugin.power.assert)
-    alias(libs.plugins.kotlin.plugin.serialization)
+    alias(libs.plugins.kotlin.plugin.serialization) // used in tests
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
     alias(libs.plugins.dokka)
     alias(libs.plugins.versions)
@@ -22,8 +22,20 @@ plugins {
 
 group = "com.xemantic.kotlin"
 
-val metaInceptionYear: String = "2025"
-val metaDescription: String = "Kotlin stdlib extensions"
+val now: LocalDateTime = LocalDateTime.now()
+val metaOrganization = "Xemantic"
+val metaOrganizationUrl = "https://xemantic.com"
+val metaGitHub = "xemantic"
+val metaInceptionYear = "2025"
+val metaDescription = "Kotlin stdlib extensions"
+
+fun MavenPomDeveloperSpec.projectDevs() {
+    developer {
+        id = "morisil"
+        name = "Kazik Pogoda"
+        url = "https://github.com/morisil"
+    }
+}
 
 val isReleaseBuild: Boolean = !(project.version as String).endsWith("-SNAPSHOT")
 
@@ -102,7 +114,6 @@ kotlin {
     mingwX64()
     watchosDeviceArm64()
 
-    @OptIn(ExperimentalSwiftExportDsl::class)
     swiftExport {}
 
     sourceSets {
@@ -124,12 +135,10 @@ repositories {
     mavenCentral()
 }
 
+// skip tests which require XCode components to be installed
 tasks {
-
-    // skip tests which require XCode components to be installed
     named("tvosSimulatorArm64Test") { enabled = false }
     named("watchosSimulatorArm64Test") { enabled = false }
-
 }
 
 powerAssert {
@@ -142,25 +151,25 @@ powerAssert {
 // https://kotlinlang.org/docs/dokka-migration.html#adjust-configuration-options
 dokka {
     pluginsConfiguration.html {
-//        footerMessage.set(xemantic.copyright)
+        footerMessage = """© ${if (metaInceptionYear != now.year.toString()) "$metaInceptionYear-" else ""}${now.year} $metaOrganization"""
     }
 }
 
-val isPublishingToGitHub = gradle.startParameter.taskNames.any {
-    it.contains("publishAllPublicationsToGitHubPackagesRepository")
-}
+//val isPublishingToGitHub = gradle.startParameter.taskNames.any {
+//    it.contains("publishAllPublicationsToGitHubPackagesRepository")
+//}
 
-publishing {
-    if (isPublishingToGitHub) {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/xemantic/xemantic-kotlin-core")
-                credentials(PasswordCredentials::class)
-            }
-        }
-    }
-}
+//publishing {
+//    if (isPublishingToGitHub) {
+//        repositories {
+//            maven {
+//                name = "GitHubPackages"
+//                url = uri("https://maven.pkg.github.com/xemantic/xemantic-kotlin-core")
+//                credentials(PasswordCredentials::class)
+//            }
+//        }
+//    }
+//}
 
 mavenPublishing {
 
@@ -182,10 +191,16 @@ mavenPublishing {
     )
 
     pom {
+
         name = rootProject.name
         description = metaDescription
         inceptionYear = metaInceptionYear
-        url = "https://github.com/xemantic/${rootProject.name}"
+        url = "https://github.com/$metaGitHub/${rootProject.name}"
+
+        organization {
+            name = metaOrganization
+            url = metaOrganizationUrl
+        }
 
         licenses {
             license {
@@ -195,34 +210,43 @@ mavenPublishing {
             }
         }
 
-        developers {
-            developer {
-                id = "morisil"
-                name = "Kazik Pogoda"
-                url = "https://github.com/morisil"
-            }
+        scm {
+            url = "https://github.com/$metaGitHub/${rootProject.name}"
+            connection = "scm:git:git://github.com/$metaGitHub/${rootProject.name}.git"
+            developerConnection = "scm:git:ssh://git@github.com/$metaGitHub/${rootProject.name}.git"
         }
 
-        scm {
-            url = "https://github.com/xemantic/${rootProject.name}"
-            connection = "scm:git:git://github.com/xemantic/${rootProject.name}.git"
-            developerConnection = "scm:git:ssh://git@github.com/xemantic/${rootProject.name}.git"
+        ciManagement {
+            system = "GitHub"
+            url = "https://github.com/$metaGitHub/${rootProject.name}/actions"
         }
+
+        issueManagement {
+            system = "GitHub"
+            url = "https://github.com/$metaGitHub/${rootProject.name}/issues"
+        }
+
+        developers {
+            projectDevs()
+        }
+
     }
+
 }
 
-val unstableKeywords = listOf("alpha", "beta", "rc")
+// dependencyUpdates task config
+val unstableVersionKeywords = listOf("alpha", "beta", "rc")
 
-fun isNonStable(
+fun isNonStableVersion(
     version: String
 ) = version.lowercase().let { normalizedVersion ->
-    unstableKeywords.any {
+    unstableVersionKeywords.any {
         it in normalizedVersion
     }
 }
 
 tasks.withType<DependencyUpdatesTask> {
     rejectVersionIf {
-        isNonStable(candidate.version)
+        isNonStableVersion(candidate.version)
     }
 }

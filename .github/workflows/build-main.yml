@@ -23,7 +23,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5.0.0
 
       - name: Build
-        run: ./gradlew build publishAllPublicationsToGitHubPackagesRepository
+        run: ./gradlew build publishToMavenCentral
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
