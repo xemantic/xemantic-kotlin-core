@@ -13,7 +13,7 @@ xemanticKotlinTest = "1.15.2"
 versionsPlugin = "0.53.0"
 dokkaPlugin = "2.1.0"
 mavenPublishPlugin = "0.34.0"
-jreleaserPlugin = "1.21.0"
+jreleaserPlugin = "1.20.0"
 binaryCompatibilityValidatorPlugin = "0.18.1"
 xemanticConventionsPlugin = "0.4.3"
 
