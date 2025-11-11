@@ -302,3 +302,7 @@ fun copyright(): String {
     }
     return """© $years $metaOrganization"""
 }
+
+tasks.named("jreleaserAnnounce") {
+    dependsOn("build", "publishToMavenCentral")
+}
