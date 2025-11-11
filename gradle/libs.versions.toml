@@ -13,6 +13,7 @@ xemanticKotlinTest = "1.15.2"
 versionsPlugin = "0.53.0"
 dokkaPlugin = "2.1.0"
 mavenPublishPlugin = "0.34.0"
+jreleaserPlugin = "1.21.0"
 binaryCompatibilityValidatorPlugin = "0.18.1"
 xemanticConventionsPlugin = "0.4.3"
 
@@ -30,4 +31,5 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidatorPlugin" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublishPlugin" }
+jreleaser = { id = "org.jreleaser", version.ref = "jreleaserPlugin" }
 xemantic-conventions = { id = "com.xemantic.gradle.xemantic-conventions", version.ref = "xemanticConventionsPlugin" }

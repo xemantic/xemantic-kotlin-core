@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jreleaser.model.Active
 import java.time.LocalDateTime
 
 plugins {
@@ -18,16 +19,18 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.versions)
     alias(libs.plugins.maven.publish)
+    alias(libs.plugins.jreleaser)
 }
 
 group = "com.xemantic.kotlin"
 
-val now: LocalDateTime = LocalDateTime.now()
+val metaName = rootProject.name
+val metaDescription = "Kotlin stdlib extensions"
 val metaOrganization = "Xemantic"
 val metaOrganizationUrl = "https://xemantic.com"
 val metaGitHub = "xemantic"
 val metaInceptionYear = "2025"
-val metaDescription = "Kotlin stdlib extensions"
+val metaCopyright = copyright()
 
 fun MavenPomDeveloperSpec.projectDevs() {
     developer {
@@ -150,30 +153,9 @@ powerAssert {
 
 dokka {
     pluginsConfiguration.html {
-        val years = if (metaInceptionYear != now.year.toString()) {
-            "$metaInceptionYear-${now.year}"
-        } else {
-            "${now.year}"
-        }
-        footerMessage = """© $years $metaOrganization"""
+        footerMessage = copyright()
     }
 }
-
-//val isPublishingToGitHub = gradle.startParameter.taskNames.any {
-//    it.contains("publishAllPublicationsToGitHubPackagesRepository")
-//}
-
-//publishing {
-//    if (isPublishingToGitHub) {
-//        repositories {
-//            maven {
-//                name = "GitHubPackages"
-//                url = uri("https://maven.pkg.github.com/xemantic/xemantic-kotlin-core")
-//                credentials(PasswordCredentials::class)
-//            }
-//        }
-//    }
-//}
 
 mavenPublishing {
 
@@ -253,4 +235,70 @@ tasks.withType<DependencyUpdatesTask> {
     rejectVersionIf {
         isNonStableVersion(candidate.version)
     }
+}
+
+val releaseAnnouncementSubject = """🚀 ${rootProject.name} $version has been released!"""
+val releasePageUrl = "https://github.com/$metaGitHub/${project.rootProject.name}/releases/tag/v$version"
+val releaseAnnouncement = """
+$releaseAnnouncementSubject
+
+$metaDescription
+
+$releasePageUrl
+""".trim()
+
+jreleaser {
+
+    announce {
+        webhooks {
+            create("discord") {
+                active = Active.ALWAYS
+                message = releaseAnnouncement
+                messageProperty = "content"
+                structuredMessage = true
+            }
+        }
+        linkedin {
+            active = Active.ALWAYS
+            subject = releaseAnnouncementSubject
+            message = releaseAnnouncement
+        }
+        bluesky {
+            active = Active.ALWAYS
+            status = releaseAnnouncement
+        }
+    }
+
+    release {
+        github {
+            skipRelease = true // we are releasing through GitHub UI
+            skipTag = true
+            token = "empty"
+            changelog {
+                enabled = false
+            }
+        }
+    }
+
+    project {
+        description = metaDescription
+        copyright = metaCopyright
+        license = "Xemantic"
+        links {
+            homepage = metaOrganizationUrl
+            documentation = metaOrganizationUrl
+        }
+        authors = listOf<String>("xemantic")
+    }
+
+}
+
+fun copyright(): String {
+    val now: LocalDateTime = LocalDateTime.now()
+    val years = if (metaInceptionYear != now.year.toString()) {
+        "$metaInceptionYear-${now.year}"
+    } else {
+        "${now.year}"
+    }
+    return """© $years $metaOrganization"""
 }

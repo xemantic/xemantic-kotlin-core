@@ -25,7 +25,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v5.0.0
         with:
-          distribution: 'temurin'
+          distribution: ${{ vars.DEFAULT_JAVA_DISTRIBUTION }}
           java-version: ${{ vars.DEFAULT_JAVA_VERSION }}
 
       - name: Setup Gradle
@@ -33,14 +33,18 @@ jobs:
 
       - name: Build and Publish
         env:
-#          ORG_GRADLE_PROJECT_githubActor: ${{ secrets.GITHUBACTOR }}
-#          ORG_GRADLE_PROJECT_githubToken: ${{ secrets.GITHUBTOKEN }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+          JRELEASER_DISCORD_WEBHOOK: ${{ secrets.DISCORD_ANNOUCEMENTS_WEBHOOK }}
+          JRELEASER_LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          JRELEASER_LINKEDIN_OWNER: ${{ secrets.LINKEDIN_OWNER }}
+          JRELEASER_BLUESKY_HOST: ${{ vars.BLUESKY_HOST }}
+          JRELEASER_BLUESKY_HANDLE: ${{ vars.BLUESKY_HANDLE }}
+          JRELEASER_BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
 
-        run: ./gradlew -Pversion=$VERSION build publishToMavenCentral --no-configuration-cache
+        run: ./gradlew -Pversion=$VERSION build publishToMavenCentral jreleaserAnnounce --no-configuration-cache
 
       - name: Get target branch for tag
         run: |

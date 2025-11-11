@@ -16,7 +16,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v5.0.0
         with:
-          distribution: 'temurin'
+          distribution: ${{ vars.DEFAULT_JAVA_DISTRIBUTION }}
           java-version: ${{ vars.DEFAULT_JAVA_VERSION }}
 
       - name: Setup Gradle
@@ -29,5 +29,4 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
-#          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ secrets.GITHUBACTOR }}
-#          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.GITHUBTOKEN }}
+
