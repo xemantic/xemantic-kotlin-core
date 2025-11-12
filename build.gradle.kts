@@ -163,7 +163,8 @@ mavenPublishing {
     signAllPublications()
 
     publishToMavenCentral(
-        automaticRelease = true
+        automaticRelease = true,
+        validateDeployment = false // for kotlin multiplatform projects it might take a while (>900s)
     )
 
     coordinates(
