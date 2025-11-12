@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jreleaser.model.Active
-import java.time.LocalDateTime
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -20,17 +19,15 @@ plugins {
     alias(libs.plugins.versions)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.jreleaser)
+    alias(libs.plugins.xemantic.conventions)
 }
 
 group = "com.xemantic.kotlin"
 
-val metaName = rootProject.name
-val metaDescription = "Kotlin stdlib extensions"
-val metaOrganization = "Xemantic"
-val metaOrganizationUrl = "https://xemantic.com"
-val metaGitHub = "xemantic"
-val metaInceptionYear = "2025"
-val metaCopyright = copyright()
+xemantic {
+    description = "Xemantic's Kotlin stdlib extensions"
+    inceptionYear = "2025"
+}
 
 fun MavenPomDeveloperSpec.projectDevs() {
     developer {
@@ -39,8 +36,6 @@ fun MavenPomDeveloperSpec.projectDevs() {
         url = "https://github.com/morisil"
     }
 }
-
-val isReleaseBuild: Boolean = !(project.version as String).endsWith("-SNAPSHOT")
 
 val javaTarget = libs.versions.javaTarget.get()
 val kotlinTarget = KotlinVersion.fromVersion(libs.versions.kotlinTarget.get())
@@ -153,7 +148,7 @@ powerAssert {
 
 dokka {
     pluginsConfiguration.html {
-        footerMessage = copyright()
+        footerMessage = xemantic.copyright
     }
 }
 
@@ -179,13 +174,13 @@ mavenPublishing {
     pom {
 
         name = rootProject.name
-        description = metaDescription
-        inceptionYear = metaInceptionYear
-        url = "https://github.com/$metaGitHub/${rootProject.name}"
+        description = xemantic.description
+        inceptionYear = xemantic.inceptionYear
+        url = "https://github.com/${xemantic.gitHubAccount}/${rootProject.name}"
 
         organization {
-            name = metaOrganization
-            url = metaOrganizationUrl
+            name = xemantic.organization
+            url = xemantic.organizationUrl
         }
 
         licenses {
@@ -197,19 +192,19 @@ mavenPublishing {
         }
 
         scm {
-            url = "https://github.com/$metaGitHub/${rootProject.name}"
-            connection = "scm:git:git://github.com/$metaGitHub/${rootProject.name}.git"
-            developerConnection = "scm:git:ssh://git@github.com/$metaGitHub/${rootProject.name}.git"
+            url = "https://github.com/${xemantic.gitHubAccount}/${rootProject.name}"
+            connection = "scm:git:git://github.com/${xemantic.gitHubAccount}/${rootProject.name}.git"
+            developerConnection = "scm:git:ssh://git@github.com/${xemantic.gitHubAccount}/${rootProject.name}.git"
         }
 
         ciManagement {
             system = "GitHub"
-            url = "https://github.com/$metaGitHub/${rootProject.name}/actions"
+            url = "https://github.com/${xemantic.gitHubAccount}/${rootProject.name}/actions"
         }
 
         issueManagement {
             system = "GitHub"
-            url = "https://github.com/$metaGitHub/${rootProject.name}/issues"
+            url = "https://github.com/${xemantic.gitHubAccount}/${rootProject.name}/issues"
         }
 
         developers {
@@ -238,13 +233,12 @@ tasks.withType<DependencyUpdatesTask> {
 }
 
 val releaseAnnouncementSubject = """🚀 ${rootProject.name} $version has been released!"""
-val releasePageUrl = "https://github.com/$metaGitHub/${project.rootProject.name}/releases/tag/v$version"
 val releaseAnnouncement = """
 $releaseAnnouncementSubject
 
-$metaDescription
+${xemantic.description}
 
-$releasePageUrl
+${xemantic.releasePageUrl}
 """.trim()
 
 jreleaser {
@@ -269,40 +263,4 @@ jreleaser {
         }
     }
 
-    release {
-        github {
-            skipRelease = true // we are releasing through GitHub UI
-            skipTag = true
-            token = "empty"
-            changelog {
-                enabled = false
-            }
-        }
-    }
-
-    project {
-        description = metaDescription
-        copyright = metaCopyright
-        license = "Xemantic"
-        links {
-            homepage = metaOrganizationUrl
-            documentation = metaOrganizationUrl
-        }
-        authors = listOf<String>("xemantic")
-    }
-
-}
-
-fun copyright(): String {
-    val now: LocalDateTime = LocalDateTime.now()
-    val years = if (metaInceptionYear != now.year.toString()) {
-        "$metaInceptionYear-${now.year}"
-    } else {
-        "${now.year}"
-    }
-    return """© $years $metaOrganization"""
-}
-
-tasks.named("jreleaserAnnounce") {
-    dependsOn("build", "publishToMavenCentral")
 }

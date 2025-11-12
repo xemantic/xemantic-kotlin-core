@@ -8,14 +8,12 @@ kotlinxSerialization = "1.9.0"
 
 xemanticKotlinTest = "1.15.2"
 
-# TODO put your dependencies here
-
 versionsPlugin = "0.53.0"
 dokkaPlugin = "2.1.0"
-mavenPublishPlugin = "0.34.0"
+mavenPublishPlugin = "0.35.0"
 jreleaserPlugin = "1.20.0"
 binaryCompatibilityValidatorPlugin = "0.18.1"
-xemanticConventionsPlugin = "0.4.3"
+xemanticConventionsPlugin = "0.6.3"
 
 [libraries]
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
