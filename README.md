@@ -29,7 +29,7 @@ In `build.gradle.kts` add:
 
 ```kotlin
 dependencies {
-    implementation("com.xemantic.kotlin:xemantic-kotlin-core:0.4.1")
+    implementation("com.xemantic.kotlin:xemantic-kotlin-core:0.4.2")
 }
 ```
 
