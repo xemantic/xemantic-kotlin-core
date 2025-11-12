@@ -27,6 +27,7 @@ group = "com.xemantic.kotlin"
 xemantic {
     description = "Xemantic's Kotlin stdlib extensions"
     inceptionYear = "2025"
+    applyAllConventions()
 }
 
 fun MavenPomDeveloperSpec.projectDevs() {
