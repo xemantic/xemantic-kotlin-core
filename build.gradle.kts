@@ -23,7 +23,7 @@ plugins {
 group = "com.xemantic.kotlin"
 
 xemantic {
-    description = "Xemantic's Kotlin stdlib extensions"
+    description = "Kotlin stdlib extensions used by Xemantic"
     inceptionYear = "2025"
     applyAllConventions()
 }

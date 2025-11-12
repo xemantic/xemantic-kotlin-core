@@ -1,6 +1,6 @@
 # xemantic-kotlin-core
 
-Kotlin extensions which should have been added to the stdlib
+Kotlin stdlib extensions used by Xemantic
 
 [<img alt="Maven Central Version" src="https://img.shields.io/maven-central/v/com.xemantic.kotlin/xemantic-kotlin-core">](https://central.sonatype.com/artifact/com.xemantic.kotlin/xemantic-kotlin-core)
 [<img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/xemantic/xemantic-kotlin-core">](https://github.com/xemantic/xemantic-kotlin-core/releases)
@@ -21,7 +21,7 @@ Kotlin extensions which should have been added to the stdlib
 
 ## Why?
 
-This project collects code, which should be a part of the Kotlin stdlib, either soon or in general as a desired functionality.
+This project collects code, which extends Kotlin stdlib with useful functions.
 
 ## Usage
 
@@ -38,8 +38,11 @@ dependencies {
 ### Update gradlew wrapper
 
 ```shell
-./gradlew wrapper --gradle-version 8.12.1 --distribution-type bin
+./gradlew wrapper --gradle-version 9.2.0 --distribution-type bin
 ```
+
+> [!NOTE]
+> Check the latest version of gradle
 
 ### Update all the dependencies to the latest versions
 
@@ -48,5 +51,5 @@ All the gradle dependencies are managed by the [libs.versions.toml](gradle/libs.
 It is easy to check for the latest version by running:
 
 ```shell
-./gradlew dependencyUpdates
+./gradlew dependencyUpdates --no-parallel
 ```
