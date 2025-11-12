@@ -1,9 +1,7 @@
 @file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
 
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -215,23 +213,6 @@ mavenPublishing {
 
     }
 
-}
-
-// dependencyUpdates task config
-val unstableVersionKeywords = listOf("alpha", "beta", "rc")
-
-fun isNonStableVersion(
-    version: String
-) = version.lowercase().let { normalizedVersion ->
-    unstableVersionKeywords.any {
-        it in normalizedVersion
-    }
-}
-
-tasks.withType<DependencyUpdatesTask> {
-    rejectVersionIf {
-        isNonStableVersion(candidate.version)
-    }
 }
 
 val releaseAnnouncementSubject = """🚀 ${rootProject.name} $version has been released!"""
