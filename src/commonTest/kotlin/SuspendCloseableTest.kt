@@ -130,6 +130,7 @@ class SuspendCloseableTest {
         // when
         val exception = assertFailsWith<IllegalStateException> {
             resource.use {
+                @Suppress("UnusedExpression")
                 "success"
             }
         }
