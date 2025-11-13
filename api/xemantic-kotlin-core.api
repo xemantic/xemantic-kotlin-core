@@ -1,3 +1,12 @@
+public abstract interface class com/xemantic/kotlin/core/SuspendCloseable {
+	public abstract fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/xemantic/kotlin/core/SuspendCloseableKt {
+	public static final fun closeFinally (Lcom/xemantic/kotlin/core/SuspendCloseable;Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun use (Lcom/xemantic/kotlin/core/SuspendCloseable;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class com/xemantic/kotlin/core/collections/XemanticCollectionsKt {
 	public static final fun mapLast (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }

@@ -52,7 +52,10 @@ kotlin {
         )
         extraWarnings = true
         progressiveMode = true
-        optIn.addAll("kotlin.time.ExperimentalTime")
+        optIn.addAll(
+            "kotlin.time.ExperimentalTime",
+            "kotlin.contracts.ExperimentalContracts"
+        )
     }
 
     jvm {
@@ -121,6 +124,7 @@ kotlin {
                 implementation(libs.xemantic.kotlin.test)
                 implementation(libs.kotlinx.serialization.core)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
 
