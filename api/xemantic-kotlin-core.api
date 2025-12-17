@@ -11,3 +11,15 @@ public final class com/xemantic/kotlin/core/collections/XemanticCollectionsKt {
 	public static final fun mapLast (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }
 
+public final class com/xemantic/kotlin/core/text/TextBuilderKt {
+	public static final fun buildText (Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
+}
+
+public final class com/xemantic/kotlin/core/text/TextScope {
+	public fun <init> (Ljava/lang/StringBuilder;)V
+	public final fun getBuilder ()Ljava/lang/StringBuilder;
+	public final fun trimLastNewLine ()V
+	public final fun unaryPlus (C)V
+	public final fun unaryPlus (Ljava/lang/String;)V
+}
+
