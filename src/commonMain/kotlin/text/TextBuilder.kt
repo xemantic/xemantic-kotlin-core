@@ -20,9 +20,6 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-/**
- * This should be moved to `xemantic-core`.
- */
 @OptIn(ExperimentalContracts::class)
 public inline fun buildText(
     block: TextScope.() -> Unit
@@ -41,7 +38,7 @@ public class TextScope(
     internal val builder: StringBuilder
 ) {
 
-    public inline operator fun String.unaryPlus() {
+    public inline operator fun CharSequence.unaryPlus() {
         builder.append(this)
     }
 
