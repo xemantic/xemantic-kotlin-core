@@ -14,4 +14,17 @@
  * limitations under the License.
  */
 
-package com.xemantic.kotlin.core
+package com.xemantic.kotlin.core.text
+
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+
+public suspend fun Flow<CharSequence>.joinToString(): String = buildString {
+    collect {
+        append(it)
+    }
+}
+
+public fun CharSequence.lineFlow(): Flow<String> = lineSequence().map {
+    "$it\n"
+}.asFlow()
