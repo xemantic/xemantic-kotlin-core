@@ -2,7 +2,7 @@
 kotlinTarget = "2.2"
 javaTarget = "17"
 
-kotlin = "2.3.0"
+kotlin = "2.2.21"
 
 kotlinxSerialization = "1.9.0"
 kotlinxCoroutines = "1.10.2"
