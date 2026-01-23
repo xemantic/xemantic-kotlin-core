@@ -53,6 +53,7 @@ kotlin {
         extraWarnings = true
         progressiveMode = true
         optIn.addAll(
+            "kotlin.time.ExperimentalTime",
             "kotlin.contracts.ExperimentalContracts"
         )
     }
