@@ -48,6 +48,9 @@ kotlin {
         languageVersion = kotlinTarget
         extraWarnings = true
         progressiveMode = true
+        optIn.addAll(
+            "kotlin.contracts.ExperimentalContracts"
+        )
     }
 
     jvm {
