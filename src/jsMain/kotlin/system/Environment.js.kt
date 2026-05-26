@@ -18,7 +18,11 @@ package com.xemantic.kotlin.core.system
 
 // `process` only exists on Node.js; on the browser there is no concept of
 // environment variables, so we degrade gracefully and return `null`.
-public actual val env: Environment = Environment { name ->
+// `process.env` is stable for the lifetime of the process, so we resolve it
+// once here rather than re-running the `typeof process` check on every lookup.
+public actual val env: Environment = run {
     val processEnv: dynamic = js("(typeof process !== 'undefined' && process.env) || null")
-    if (processEnv == null) null else processEnv[name] as? String
+    Environment { name ->
+        if (processEnv == null) null else processEnv[name] as? String
+    }
 }

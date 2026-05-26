@@ -77,17 +77,16 @@ class EnvironmentTest {
         assert(env[ABSENT_VARIABLE, "default"] == "default")
     }
 
+    /**
+     * The build provides [PROVIDED_VARIABLE] to every test runner that can read
+     * environment variables. Runners that cannot are handled in `build.gradle.kts`:
+     * the Wasm/WASI Node runner excludes this test via `excludeTestsMatching`,
+     * while the Wasm/JS d8 and browser runners are disabled outright.
+     */
     @Test
     fun `env should read the variable provided to the test runner`() {
-        val value = env[PROVIDED_VARIABLE]
-        // Environment variables are unavailable on Wasm/WASI and in the browser
-        // unless explicitly wired up; there `env` returns null and there is
-        // nothing to assert. Everywhere they are available (JVM, Node.js, native
-        // and - via webpack - the browser) the build provides the value below.
-        if (value != null) {
-            assert(value == PROVIDED_VALUE)
-            assert(env[PROVIDED_VARIABLE, "default"] == PROVIDED_VALUE)
-        }
+        assert(env[PROVIDED_VARIABLE] == PROVIDED_VALUE)
+        assert(env[PROVIDED_VARIABLE, "default"] == PROVIDED_VALUE)
     }
 
 }

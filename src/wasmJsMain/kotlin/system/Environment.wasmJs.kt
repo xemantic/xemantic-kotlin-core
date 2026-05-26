@@ -18,6 +18,9 @@ package com.xemantic.kotlin.core.system
 
 // `process` only exists on Node.js; on the browser there is no concept of
 // environment variables, so we degrade gracefully and return `null`.
+// Unlike the JS target, Wasm/JS has no `dynamic` type, so the lookup happens
+// inside the `js(...)` snippet (with `name` passed through) rather than via
+// Kotlin index access on a dynamic `process.env`.
 public actual val env: Environment = Environment { name -> getEnv(name) }
 
 private fun getEnv(name: String): String? =
