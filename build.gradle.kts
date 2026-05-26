@@ -5,6 +5,9 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jreleaser.model.Active
 
 plugins {
@@ -139,6 +142,50 @@ repositories {
 tasks {
     named("tvosSimulatorArm64Test") { enabled = false }
     named("watchosSimulatorArm64Test") { enabled = false }
+    // The Wasm/JS browser and d8 runners cannot run the `env` value test, and
+    // neither can be made to skip just that test, so both are disabled:
+    // - browser: `webpack.config.d/env-config.js` replaces the whole `process`
+    //   object so the browser `env` can resolve `process.env[name]`, but that
+    //   shim is incompatible with the Wasm/JS browser loader.
+    // - d8: has no `process`, and its builtin test framework ignores Gradle test
+    //   filters, so the value test cannot be excluded the way it is on Wasm/WASI.
+    // Wasm/JS stays covered by its Node.js runner.
+    named("wasmJsBrowserTest") { enabled = false }
+    named("wasmJsD8Test") { enabled = false }
+}
+
+// Provides an environment variable to the test runners so that the `env`
+// implementations can be exercised against a real value. See also
+// `webpack.config.d/env-config.js` which does the same for browser tests, where
+// there is no system environment.
+val testEnvVariableName = "XEMANTIC_KOTLIN_CORE_TEST_ENV"
+val testEnvVariableValue = "xemantic-env-test-value"
+
+// Wasm/WASI cannot read environment variables yet (no `environ` wiring), so the
+// test that asserts the provided value is excluded on its Node runner - which
+// honors Gradle test filters - while the absent-variable tests still run there.
+// The Wasm/JS d8 and browser runners also lack a value but ignore filters, so
+// they are disabled above instead.
+val envValueUnavailableTestTask = "wasmWasiNodeTest"
+val envValueTestName =
+    "com.xemantic.kotlin.core.system.EnvironmentTest." +
+        "env should read the variable provided to the test runner"
+
+tasks.withType<KotlinJvmTest>().configureEach {
+    environment(testEnvVariableName, testEnvVariableValue)
+}
+
+tasks.withType<KotlinJsTest>().configureEach {
+    environment(testEnvVariableName, testEnvVariableValue)
+    if (name == envValueUnavailableTestTask) {
+        filter.excludeTestsMatching(envValueTestName)
+    }
+}
+
+tasks.withType<KotlinNativeTest>().configureEach {
+    environment(testEnvVariableName, testEnvVariableValue)
+    // the iOS/tvOS/watchOS simulator forwards only `SIMCTL_CHILD_`-prefixed vars
+    environment("SIMCTL_CHILD_$testEnvVariableName", testEnvVariableValue)
 }
 
 powerAssert {
