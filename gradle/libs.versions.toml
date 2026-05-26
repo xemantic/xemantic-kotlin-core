@@ -1,5 +1,5 @@
 [versions]
-kotlinTarget = "2.2"
+kotlinTarget = "2.3"
 javaTarget = "17"
 kotlin = "2.3.21"
 kotlinxSerialization = "1.11.0"
