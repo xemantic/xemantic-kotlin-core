@@ -11,6 +11,18 @@ public final class com/xemantic/kotlin/core/collections/XemanticCollectionsKt {
 	public static final fun mapLast (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }
 
+public abstract interface class com/xemantic/kotlin/core/system/Environment {
+	public abstract fun get (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/xemantic/kotlin/core/system/EnvironmentKt {
+	public static final fun get (Lcom/xemantic/kotlin/core/system/Environment;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/xemantic/kotlin/core/system/Environment_jvmKt {
+	public static final fun getEnv ()Lcom/xemantic/kotlin/core/system/Environment;
+}
+
 public final class com/xemantic/kotlin/core/text/TextBuilderKt {
 	public static final fun buildText (Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
 }

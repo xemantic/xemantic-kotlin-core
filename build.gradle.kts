@@ -5,6 +5,9 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jreleaser.model.Active
 
 plugins {
@@ -139,6 +142,33 @@ repositories {
 tasks {
     named("tvosSimulatorArm64Test") { enabled = false }
     named("watchosSimulatorArm64Test") { enabled = false }
+    // `webpack.config.d/env-config.js` replaces the whole `process` object so
+    // that the browser `env` can resolve `process.env[name]`; that shim is
+    // incompatible with the Wasm/JS browser loader. Wasm/JS stays covered by its
+    // Node.js and d8 runners.
+    named("wasmJsBrowserTest") { enabled = false }
+}
+
+// Provides an environment variable to the test runners so that the `env`
+// implementations can be exercised against a real value. See also
+// `webpack.config.d/env-config.js` which does the same for browser tests, where
+// there is no system environment. Wasm/WASI and Wasm/JS d8 + browser test
+// runners receive no value; the corresponding test tolerates a `null` there.
+val testEnvVariableName = "XEMANTIC_KOTLIN_CORE_TEST_ENV"
+val testEnvVariableValue = "xemantic-env-test-value"
+
+tasks.withType<KotlinJvmTest>().configureEach {
+    environment(testEnvVariableName, testEnvVariableValue)
+}
+
+tasks.withType<KotlinJsTest>().configureEach {
+    environment(testEnvVariableName, testEnvVariableValue)
+}
+
+tasks.withType<KotlinNativeTest>().configureEach {
+    environment(testEnvVariableName, testEnvVariableValue)
+    // the iOS/tvOS/watchOS simulator forwards only `SIMCTL_CHILD_`-prefixed vars
+    environment("SIMCTL_CHILD_$testEnvVariableName", testEnvVariableValue)
 }
 
 powerAssert {
