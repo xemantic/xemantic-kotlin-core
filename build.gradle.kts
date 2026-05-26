@@ -46,16 +46,8 @@ kotlin {
     compilerOptions {
         apiVersion = kotlinTarget
         languageVersion = kotlinTarget
-        freeCompilerArgs.addAll(
-            "-Xcontext-parameters",
-            "-Xcontext-sensitive-resolution"
-        )
         extraWarnings = true
         progressiveMode = true
-        optIn.addAll(
-            "kotlin.time.ExperimentalTime",
-            "kotlin.contracts.ExperimentalContracts"
-        )
     }
 
     jvm {
