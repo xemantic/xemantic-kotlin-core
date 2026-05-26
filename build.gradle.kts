@@ -1,7 +1,6 @@
 @file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
 
-import com.vanniktech.maven.publish.JavadocJar
-import com.vanniktech.maven.publish.KotlinMultiplatform
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -15,6 +14,7 @@ plugins {
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
     alias(libs.plugins.dokka)
     alias(libs.plugins.versions)
+    alias(libs.plugins.version.catalog.update)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.jreleaser)
     alias(libs.plugins.xemantic.conventions)
@@ -46,10 +46,6 @@ kotlin {
     compilerOptions {
         apiVersion = kotlinTarget
         languageVersion = kotlinTarget
-        freeCompilerArgs.addAll(
-            "-Xcontext-parameters",
-            "-Xcontext-sensitive-resolution"
-        )
         extraWarnings = true
         progressiveMode = true
         optIn.addAll(
@@ -89,7 +85,6 @@ kotlin {
 
     // native, see https://kotlinlang.org/docs/native-target-support.html
     // tier 1
-    macosX64()
     macosArm64()
     iosSimulatorArm64()
     iosX64()
@@ -99,11 +94,9 @@ kotlin {
     linuxX64()
     linuxArm64()
     watchosSimulatorArm64()
-    watchosX64()
     watchosArm32()
     watchosArm64()
     tvosSimulatorArm64()
-    tvosX64()
     tvosArm64()
 
     // tier 3
@@ -155,6 +148,31 @@ powerAssert {
     )
 }
 
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any {
+        version.uppercase().contains(it)
+    }
+    val versionRegex = "^[0-9,.v-]+(-r)?$".toRegex()
+    return !(stableKeyword || versionRegex.matches(version))
+}
+
+// only consider stable versions when currently on a stable version
+tasks.withType<DependencyUpdatesTask> {
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+}
+
+versionCatalogUpdate {
+    // preserve the manual, logically-grouped ordering of libs.versions.toml
+    sortByKey = false
+    keep {
+        // kotlinTarget / javaTarget are plain version constants with no version.ref
+        versions = setOf("kotlinTarget", "javaTarget")
+        keepUnusedVersions = false
+    }
+}
+
 dokka {
     pluginsConfiguration.html {
         footerMessage = xemantic.copyright
@@ -163,17 +181,8 @@ dokka {
 
 mavenPublishing {
 
-    configure(KotlinMultiplatform(
-        javadocJar = JavadocJar.Dokka("dokkaGenerateHtml"),
-        sourcesJar = true
-    ))
-
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
-
-    publishToMavenCentral(
-        automaticRelease = true,
-        validateDeployment = false // for kotlin multiplatform projects it might take a while (>900s)
-    )
 
     coordinates(
         groupId = group.toString(),
