@@ -19,26 +19,21 @@ package com.xemantic.kotlin.core.text
 import com.xemantic.kotlin.test.assert
 import kotlin.test.Test
 
-class TextBuilderTest {
-
-    @Test
-    fun `should return empty string for empty block`() {
-        assert(buildText {} == "")
-    }
+class StringBuilderExtensionsTest {
 
     @Test
     fun `should append single string with unary plus`() {
-        assert(buildText { +"hello" } == "hello")
+        assert(buildString { +"hello" } == "hello")
     }
 
     @Test
     fun `should append single char with unary plus`() {
-        assert(buildText { +'x' } == "x")
+        assert(buildString { +'x' } == "x")
     }
 
     @Test
     fun `should append multiple strings`() {
-        val result = buildText {
+        val result = buildString {
             +"hello"
             +" "
             +"world"
@@ -48,7 +43,7 @@ class TextBuilderTest {
 
     @Test
     fun `should append multiple chars`() {
-        val result = buildText {
+        val result = buildString {
             +'a'
             +'b'
             +'c'
@@ -58,7 +53,7 @@ class TextBuilderTest {
 
     @Test
     fun `should mix strings and chars`() {
-        val result = buildText {
+        val result = buildString {
             +"hello"
             +','
             +' '
@@ -70,7 +65,7 @@ class TextBuilderTest {
 
     @Test
     fun `should handle multiline text`() {
-        val result = buildText {
+        val result = buildString {
             +"line1\n"
             +"line2\n"
             +"line3"
@@ -80,7 +75,7 @@ class TextBuilderTest {
 
     @Test
     fun `should handle newline chars`() {
-        val result = buildText {
+        val result = buildString {
             +"line1"
             +'\n'
             +"line2"
@@ -90,7 +85,7 @@ class TextBuilderTest {
 
     @Test
     fun `trimLastNewLine should remove trailing newline`() {
-        val result = buildText {
+        val result = buildString {
             +"hello\n"
             trimLastNewLine()
         }
@@ -99,7 +94,7 @@ class TextBuilderTest {
 
     @Test
     fun `trimLastNewLine should do nothing when no trailing newline`() {
-        val result = buildText {
+        val result = buildString {
             +"hello"
             trimLastNewLine()
         }
@@ -108,7 +103,7 @@ class TextBuilderTest {
 
     @Test
     fun `trimLastNewLine should do nothing on empty builder`() {
-        val result = buildText {
+        val result = buildString {
             trimLastNewLine()
         }
         assert(result == "")
@@ -116,7 +111,7 @@ class TextBuilderTest {
 
     @Test
     fun `trimLastNewLine should only remove last newline`() {
-        val result = buildText {
+        val result = buildString {
             +"line1\n"
             +"line2\n"
             trimLastNewLine()
@@ -127,7 +122,7 @@ class TextBuilderTest {
     @Test
     fun `should work with string interpolation`() {
         val name = "world"
-        val result = buildText {
+        val result = buildString {
             +"hello $name"
         }
         assert(result == "hello world")
@@ -136,7 +131,7 @@ class TextBuilderTest {
     @Test
     fun `should handle conditional appending`() {
         val includeGreeting = true
-        val result = buildText {
+        val result = buildString {
             if (includeGreeting) {
                 +"hello "
             }
@@ -147,7 +142,7 @@ class TextBuilderTest {
 
     @Test
     fun `should handle loop appending`() {
-        val result = buildText {
+        val result = buildString {
             for (i in 1..3) {
                 +"$i"
                 if (i < 3) +","
@@ -158,7 +153,7 @@ class TextBuilderTest {
 
     @Test
     fun `should handle special characters`() {
-        val result = buildText {
+        val result = buildString {
             +"\t"
             +"indented"
             +'\r'
