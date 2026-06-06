@@ -1,7 +1,7 @@
 [versions]
-kotlinTarget = "2.3"
+kotlinTarget = "2.4"
 javaTarget = "17"
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 kotlinxSerialization = "1.11.0"
 kotlinxCoroutines = "1.11.0"
 xemanticKotlinTest = "1.17.5"
