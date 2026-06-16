@@ -25,8 +25,8 @@ public final class com/xemantic/kotlin/core/system/Environment_jvmKt {
 
 public final class com/xemantic/kotlin/core/text/StringBuilderExtensionsKt {
 	public static final fun trimLastNewLine (Ljava/lang/StringBuilder;)V
-	public static final fun unaryPlus (Ljava/lang/StringBuilder;C)V
-	public static final fun unaryPlus (Ljava/lang/StringBuilder;Ljava/lang/CharSequence;)V
+	public static final fun unaryPlus (Ljava/lang/Appendable;C)V
+	public static final fun unaryPlus (Ljava/lang/Appendable;Ljava/lang/CharSequence;)V
 }
 
 public final class com/xemantic/kotlin/core/text/TextFlowsKt {

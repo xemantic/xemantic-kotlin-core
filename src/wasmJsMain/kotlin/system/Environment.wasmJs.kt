@@ -23,5 +23,6 @@ package com.xemantic.kotlin.core.system
 // Kotlin index access on a dynamic `process.env`.
 public actual val env: Environment = Environment { name -> getEnv(name) }
 
+@OptIn(ExperimentalWasmJsInterop::class)
 private fun getEnv(name: String): String? =
     js("(typeof process !== 'undefined' && process.env && process.env[name] != null) ? process.env[name] : null")
