@@ -17,15 +17,15 @@
 package com.xemantic.kotlin.core.text
 
 @Suppress("NOTHING_TO_INLINE")
-context(builder: StringBuilder)
+context(appendable: Appendable)
 public inline operator fun CharSequence.unaryPlus() {
-    builder.append(this)
+    appendable.append(this)
 }
 
 @Suppress("NOTHING_TO_INLINE")
-context(builder: StringBuilder)
+context(appendable: Appendable)
 public inline operator fun Char.unaryPlus() {
-    builder.append(this)
+    appendable.append(this)
 }
 
 context(builder: StringBuilder)
