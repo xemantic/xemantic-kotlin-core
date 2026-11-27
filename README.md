@@ -35,21 +35,5 @@ dependencies {
 
 ## Development
 
-### Update gradlew wrapper
-
-```shell
-./gradlew wrapper --gradle-version 9.2.0 --distribution-type bin
-```
-
-> [!NOTE]
-> Check the latest version of gradle
-
-### Update all the dependencies to the latest versions
-
-All the gradle dependencies are managed by the [libs.versions.toml](gradle/libs.versions.toml) file in the `gradle` dir.
-
-It is easy to check for the latest version by running:
-
-```shell
-./gradlew dependencyUpdates --no-parallel
-```
+See [DEVELOPMENT.md](DEVELOPMENT.md) for the documentation conventions,
+and for maintenance notes on updating the gradle wrapper and the project dependencies.

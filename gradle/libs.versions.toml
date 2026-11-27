@@ -1,17 +1,18 @@
 [versions]
+# libraries
 kotlinTarget = "2.4"
 javaTarget = "17"
-kotlin = "2.4.0"
-kotlinxSerialization = "1.11.0"
+kotlin = "2.4.21"
+kotlinxSerialization = "1.13.0"
 kotlinxCoroutines = "1.11.0"
-xemanticKotlinTest = "1.17.5"
-versionsPlugin = "0.54.0"
-versionCatalogUpdatePlugin = "1.1.0"
-dokkaPlugin = "2.2.0"
-mavenPublishPlugin = "0.36.0"
-jreleaserPlugin = "1.24.0"
-binaryCompatibilityValidatorPlugin = "0.18.1"
-xemanticConventionsPlugin = "0.6.8"
+xemanticKotlinTest = "1.18.0"
+asm = "9.10.1"
+# plugins
+versionCatalogUpdatePlugin = "1.1.2"
+dokkaPlugin = "2.3.0"
+mavenPublishPlugin = "0.37.0"
+jreleaserPlugin = "1.27.0"
+xemanticConventionsPlugin = "0.7.1"
 
 [libraries]
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
@@ -26,9 +27,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-plugin-power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatalogUpdatePlugin" }
-kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidatorPlugin" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublishPlugin" }
 jreleaser = { id = "org.jreleaser", version.ref = "jreleaserPlugin" }
 xemantic-conventions = { id = "com.xemantic.gradle.xemantic-conventions", version.ref = "xemanticConventionsPlugin" }
