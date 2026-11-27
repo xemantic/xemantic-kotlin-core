@@ -1,0 +1,28 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.xemantic.kotlin:xemantic-kotlin-core>
+abstract fun interface com.xemantic.kotlin.core.system/Environment { // com.xemantic.kotlin.core.system/Environment|null[0]
+    abstract fun get(kotlin/String): kotlin/String? // com.xemantic.kotlin.core.system/Environment.get|get(kotlin.String){}[0]
+}
+
+abstract interface com.xemantic.kotlin.core/SuspendCloseable { // com.xemantic.kotlin.core/SuspendCloseable|null[0]
+    abstract suspend fun close() // com.xemantic.kotlin.core/SuspendCloseable.close|close(){}[0]
+}
+
+final val com.xemantic.kotlin.core.system/env // com.xemantic.kotlin.core.system/env|{}env[0]
+    final fun <get-env>(): com.xemantic.kotlin.core.system/Environment // com.xemantic.kotlin.core.system/env.<get-env>|<get-env>(){}[0]
+
+final fun (com.xemantic.kotlin.core.system/Environment).com.xemantic.kotlin.core.system/get(kotlin/String, kotlin/String): kotlin/String // com.xemantic.kotlin.core.system/get|get@com.xemantic.kotlin.core.system.Environment(kotlin.String;kotlin.String){}[0]
+final fun (context(kotlin.text/StringBuilder)).com.xemantic.kotlin.core.text/trimLastNewLine() // com.xemantic.kotlin.core.text/trimLastNewLine|trimLastNewLine(kotlin.text.StringBuilder)(){}[0]
+final fun (kotlin/CharSequence).com.xemantic.kotlin.core.text/lineFlow(): kotlinx.coroutines.flow/Flow<kotlin/String> // com.xemantic.kotlin.core.text/lineFlow|lineFlow@kotlin.CharSequence(){}[0]
+final inline fun (context(kotlin.text/Appendable), kotlin/Char).com.xemantic.kotlin.core.text/unaryPlus() // com.xemantic.kotlin.core.text/unaryPlus|unaryPlus(kotlin.text.Appendable)@kotlin.Char(){}[0]
+final inline fun (context(kotlin.text/Appendable), kotlin/CharSequence).com.xemantic.kotlin.core.text/unaryPlus() // com.xemantic.kotlin.core.text/unaryPlus|unaryPlus(kotlin.text.Appendable)@kotlin.CharSequence(){}[0]
+final inline fun <#A: kotlin/Any?> (kotlin.collections/List<#A>).com.xemantic.kotlin.core.collections/mapLast(kotlin/Function1<#A, #A>): kotlin.collections/List<#A> // com.xemantic.kotlin.core.collections/mapLast|mapLast@kotlin.collections.List<0:0>(kotlin.Function1<0:0,0:0>){0§<kotlin.Any?>}[0]
+final suspend fun (com.xemantic.kotlin.core/SuspendCloseable?).com.xemantic.kotlin.core/closeFinally(kotlin/Throwable?) // com.xemantic.kotlin.core/closeFinally|closeFinally@com.xemantic.kotlin.core.SuspendCloseable?(kotlin.Throwable?){}[0]
+final suspend fun (kotlinx.coroutines.flow/Flow<kotlin/CharSequence>).com.xemantic.kotlin.core.text/joinToString(): kotlin/String // com.xemantic.kotlin.core.text/joinToString|joinToString@kotlinx.coroutines.flow.Flow<kotlin.CharSequence>(){}[0]
+final suspend inline fun <#A: com.xemantic.kotlin.core/SuspendCloseable?, #B: kotlin/Any?> (#A).com.xemantic.kotlin.core/use(kotlin.coroutines/SuspendFunction1<#A, #B>): #B // com.xemantic.kotlin.core/use|use@0:0(kotlin.coroutines.SuspendFunction1<0:0,0:1>){0§<com.xemantic.kotlin.core.SuspendCloseable?>;1§<kotlin.Any?>}[0]

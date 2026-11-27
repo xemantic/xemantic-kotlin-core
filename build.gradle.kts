@@ -1,10 +1,10 @@
 @file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
 
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
@@ -14,9 +14,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.plugin.power.assert)
     alias(libs.plugins.kotlin.plugin.serialization) // used in tests
-    alias(libs.plugins.kotlinx.binary.compatibility.validator)
     alias(libs.plugins.dokka)
-    alias(libs.plugins.versions)
     alias(libs.plugins.version.catalog.update)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.jreleaser)
@@ -45,6 +43,9 @@ val kotlinTarget = KotlinVersion.fromVersion(libs.versions.kotlinTarget.get())
 kotlin {
 
     explicitApi()
+
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation()
 
     compilerOptions {
         apiVersion = kotlinTarget
@@ -138,6 +139,14 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.ow2.asm") {
+            useVersion(libs.versions.asm.get())
+        }
+    }
+}
+
 // skip tests which require XCode components to be installed
 tasks {
     named("tvosSimulatorArm64Test") { enabled = false }
@@ -195,31 +204,17 @@ powerAssert {
     )
 }
 
-fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any {
-        version.uppercase().contains(it)
-    }
-    val versionRegex = "^[0-9,.v-]+(-r)?$".toRegex()
-    return !(stableKeyword || versionRegex.matches(version))
-}
-
-// only consider stable versions when currently on a stable version
-tasks.withType<DependencyUpdatesTask> {
-    rejectVersionIf {
-        isNonStable(candidate.version) && !isNonStable(currentVersion)
-    }
-}
-
 versionCatalogUpdate {
     // preserve the manual, logically-grouped ordering of libs.versions.toml
     sortByKey = false
     keep {
-        // kotlinTarget / javaTarget are plain version constants with no version.ref
-        versions = setOf("kotlinTarget", "javaTarget")
+        // kotlinTarget / javaTarget / asm are plain version constants with no version.ref
+        versions = setOf("kotlinTarget", "javaTarget", "asm")
         keepUnusedVersions = false
     }
 }
 
+// https://kotlinlang.org/docs/dokka-migration.html#adjust-configuration-options
 dokka {
     pluginsConfiguration.html {
         footerMessage = xemantic.copyright
@@ -228,14 +223,8 @@ dokka {
 
 mavenPublishing {
 
-    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
-
-    coordinates(
-        groupId = group.toString(),
-        artifactId = rootProject.name,
-        version = version.toString()
-    )
+    publishToMavenCentral(automaticRelease = true)
 
     pom {
 
